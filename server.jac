@@ -3,8 +3,12 @@
 # glob llm = OpenAI(model_name='gpt-4o');
 
 # ALTERNATIVELY
+# import:py from mtllm.llms {Ollama}
+# glob llm = Ollama(model_name='llama3.1');
+
 import:py from mtllm.llms {Ollama}
-glob llm = Ollama(model_name='llama3.1');
+glob llm = Ollama(model_name='mistral');
+
 
 import:jac from rag {RagEngine}
 glob rag_engine:RagEngine = RagEngine();
