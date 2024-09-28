@@ -46,7 +46,7 @@ can bootstrap_frontend (token: str) {
 
 with entry {
     INSTANCE_URL = "http://localhost:8000";
-    TEST_USER_EMAIL = "test6@mail.com"; #changed to avoid conflicts
+    TEST_USER_EMAIL = "test@mail.com"; #changed to avoid conflicts
     TEST_USER_PASSWORD = "password";
 
     response = requests.post(
@@ -69,6 +69,8 @@ with entry {
             f"{INSTANCE_URL}/user/login",
             json={"email": TEST_USER_EMAIL, "password": TEST_USER_PASSWORD}
         );
+        report(response.status_code)
+        report(response.text)
         assert response.status_code == 200;
     }
 
