@@ -3,11 +3,11 @@
 # glob llm = OpenAI(model_name='gpt-4o');
 
 # ALTERNATIVELY
-# import:py from mtllm.llms {Ollama}
-# glob llm = Ollama(model_name='llama3.1');
-
 import:py from mtllm.llms {Ollama}
-glob llm = Ollama(model_name='mistral');
+glob llm = Ollama(model_name='llama3.1');
+
+# import:py from mtllm.llms {Ollama}
+# glob llm = Ollama(model_name='mistral');
 
 
 import:jac from rag {RagEngine}
@@ -16,6 +16,7 @@ glob rag_engine:RagEngine = RagEngine();
 enum ChatType {
     RAG : 'Need to use Retrievable information in specific documents to respond' = "RAG",
     QA : 'Given context is enough for an answer' = "user_qa"
+    MENTOR : 'Provide advice or mentorship support' = "mentor"
 }
 
 walker interact {
@@ -86,6 +87,7 @@ walker infer {
             router_node = here ++> Router();
             router_node ++> RagChat();
             router_node ++> QAChat();
+            router_node ++> MentorChat();
             visit router_node;
         }
     }
@@ -125,7 +127,41 @@ node QAChat :Chat: {
             chat_history: 'chat history':list[dict],
             agent_role:'role of the agent responding':str
                 ) -> 'response':str by llm();
-        here.response = respond_with_llm(here.message, here.chat_history, agent_role="You are a conversation agent designed to help users with their queries");
+        here.response = respond_with_llm(here.message, here.chat_history, agent_role="You are a mentor offering professional or personal advice");
     }
 }
+
+
+node MentorChat :Chat: {
+    has chat_type: ChatType = ChatType.MENTOR;
+
+    can respond with infer entry {
+        can 'Respond to message using chat_history as context and agent_role as the goal of the agent'
+        respond_with_llm(   message:'current message':str,
+            chat_history: 'chat history':list[dict],
+            agent_role:'role of the agent responding':str
+                ) -> 'response':str by llm();
+        here.response = respond_with_llm(here.message, here.chat_history, agent_role="You are a mentor offering professional or personal advice.");
+    }
+}
+
+# node MentorshipChat :Chat: {
+#     has chat_type: ChatType = ChatType.MENTORSHIP;
+
+#     can respond with infer entry {
+#         can 'Respond to message using chat_history as context and agent_role as the goal of the agent'
+#         respond_with_llm(
+#             message: 'current message':str,
+#             chat_history: 'chat history':list[dict],
+#             agent_role: 'role of the agent responding':str
+#         ) -> 'response':str by llm();
+
+#         here.response = respond_with_llm(
+#             message = here.message,
+#             chat_history = here.chat_history,
+#             agent_role = "You are a mentor offering professional or personal advice."
+#         );
+#     }
+# }
+
 
