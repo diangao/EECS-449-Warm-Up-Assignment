@@ -5,10 +5,10 @@ from jaclang.plugin.feature import JacFeature as _Jac
 from jaclang.plugin.builtin import *
 from dataclasses import dataclass as __jac_dataclass__
 if _jac_typ.TYPE_CHECKING:
-    from mtllm.llms import OpenAI
+    from mtllm.llms import Ollama
 else:
-    OpenAI, = __jac_import__(target='mtllm.llms', base_path=__file__, lng='py', absorb=False, mdl_alias=None, items={'OpenAI': None})
-llm = OpenAI(model_name='gpt-4o')
+    Ollama, = __jac_import__(target='mtllm.llms', base_path=__file__, lng='py', absorb=False, mdl_alias=None, items={'Ollama': None})
+llm = Ollama(model_name='llama3.1')
 if _jac_typ.TYPE_CHECKING:
     from rag import RagEngine
 else:
